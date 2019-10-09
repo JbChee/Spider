@@ -15,7 +15,7 @@
 
 ![新浪微博结果1.0](image/新浪微博结果1.0.png)
 
-![mongodb](image\mongodb.png)
+![mongodb](image/mongodb.png)
 
 
 
