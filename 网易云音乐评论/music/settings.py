@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for mySpider project
+# Scrapy settings for music project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -9,27 +9,25 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'mySpider'
+BOT_NAME = 'music'
 
-SPIDER_MODULES = ['mySpider.spiders']
-NEWSPIDER_MODULE = 'mySpider.spiders'
+SPIDER_MODULES = ['music.spiders']
+NEWSPIDER_MODULE = 'music.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = 'mySpider (+http://www.yourdomain.com)'
-USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb'\
-             + 'Kit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.75 Safari/537.36'
+#USER_AGENT = 'music (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 8
+#CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-# DOWNLOAD_DELAY = 0.5
+#DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -49,16 +47,15 @@ CONCURRENT_REQUESTS = 8
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'mySpider.middlewares.MyspiderSpiderMiddleware': 543,
+#    'music.middlewares.MusicSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-   # 'mySpider.middlewares.MyspiderDownloaderMiddleware': 543,
-   # 'mySpider.middlewares.Random_txt_Proxy': 543,
-   'mySpider.middlewares.RandomUserAgent': 300,
-   # 'mySpider.middlewares.Random_api_Proxy': 200,
+   # 'music.middlewares.MusicDownloaderMiddleware': 543,
+   'music.middlewares.SeleniumMiddleware': 543,
+
 }
 
 # Enable or disable extensions
@@ -69,10 +66,9 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-   # 'mySpider.pipelines.MyspiderPipeline': 300,
-   'mySpider.pipelines.LiepingPieline': 300,
-}
+#ITEM_PIPELINES = {
+#    'music.pipelines.MusicPipeline': 300,
+#}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -94,25 +90,3 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-
-
-
-
-USER_AGENTS = [
-    #IE 9.0
-    "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0",
-    # IE 8.0
-    "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)",
-    # IE 7.0
-    "User-Agent:Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)",
-    # IE 6.0
-    "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)",
-    # Chrome 17.0 – MAC
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11",
-    # Firefox 4.0.1 – Windows
-    "Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
-
-]
-
-# LOG_FILE = "my_log.log"
-# LOG_LEVEL = "INFO"

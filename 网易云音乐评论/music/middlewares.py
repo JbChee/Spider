@@ -7,8 +7,17 @@
 
 from scrapy import signals
 
+from logging import getLogger
+from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from scrapy.http import HtmlResponse
+import time
 
-class MyspiderSpiderMiddleware(object):
+
+class MusicSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
     # passed objects.
@@ -56,7 +65,7 @@ class MyspiderSpiderMiddleware(object):
         spider.logger.info('Spider opened: %s' % spider.name)
 
 
-class MyspiderDownloaderMiddleware(object):
+class MusicDownloaderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
@@ -103,71 +112,53 @@ class MyspiderDownloaderMiddleware(object):
         spider.logger.info('Spider opened: %s' % spider.name)
 
 
-import random
-import base64
-from .settings import  USER_AGENTS
+class SeleniumMiddleware():
+    def __init__(self, timeout=None, service_args=[]):
+        # self.logger = getLogger(__name__)
+        self.timeout = 5
+        self.browser = webdriver.PhantomJS(service_args=service_args)
+        # self.browser.set_window_size(1400, 700)
+        self.browser.maximize_window()
+        self.browser.set_page_load_timeout(self.timeout)
+        self.wait = WebDriverWait(self.browser, self.timeout)
 
-class Random_txt_Proxy(object):
-    def process_request(self, request, spider):
-        with open('E:/python_code/Search/learn_scrapy/mySpider/proxy.txt','r') as f:
-            proxies = f.readlines()
-        proxy = random.choice(proxies)
+    def __del__(self):
+        self.browser.close()
 
-        # if proxy['user_passwd'] is None:
-            # 没有代理账户验证的代理使用方式
-        request.meta['proxy'] = "https://" + proxy
-        print(proxy)
-        # else:
-        #     # 对账户密码进行base64编码转换
-        #     base64_userpasswd = base64.b64encode(proxy['user_passwd'])
-        #     # 对应到代理服务器的信令格式里
-        #     request.headers['Proxy-Authorization'] = 'Basic ' + base64_userpasswd
-        #     request.meta['proxy'] = "http://" + proxy['ip_port']
+    def process_request(self,request, spider):
+        #判断请求类型  标记
+        '''
+        type : index_page     歌曲榜单请求
+        type : comment        歌曲评论请求
+        page : 2  下一页
 
+        '''
+        page = request.meta.get('page', 1)
+        type = request.meta.get('type')
+        try:
+            self.browser.get(request.url)
+            time.sleep(2)
 
-import requests
-import json
-class Random_api_Proxy(object):
+            #进入frame
+            frame = self.browser.find_elements_by_tag_name('iframe')[0]
+            self.browser.switch_to.frame(frame)
 
-    def __init__(self):
-        self.url = 'http://svip.kdlapi.com/api/getproxy/?orderid=926946570785595&num=100&protocol=2&me' \
-                   'thod=2&an_an=1&an_ha=1&quality=2&format=json&sep=1'
-        self.flag = 1
-        self.get_proxies_num = 1
-        self.lists = requests.get(self.url).json()
-        self.proxies = self.lists['data']['proxy_list']
+            if type == 'comment':
+                next_page = self.wait.until(
+                    EC.presence_of_element_located((By.LINK_TEXT, '下一页'))
+                )
+                if page == 2:
+                    #点击下一页的评论
+                    next_page.click()
+                    time.sleep(5)
 
-
-    #
-    def get_proxies(self):
-        lists = requests.get(self.url).json()
-        proxies = lists['data']['proxy_list']
-        return proxies  #返回列表
-
-
-    def process_request(self, request, spider):
-        PROXIES = self.proxies
-        if self.get_proxies_num == 1 or self.get_proxies_num == 32:
-            PROXIES = self.get_proxies()
-
-        if self.flag >32:
-            proxy = random.choice(PROXIES)
-            request.meta['proxy'] = "http://" + proxy
-            self.flag = 1
-            self.get_proxies_num += 1
-            print(proxy)
-        else:
-            self.flag +=1
+            if type == 'index_page':
+                self.wait.until(
+                    EC.presence_of_all_elements_located((By.CLASS_NAME,'f-ff2'))
+                )
+            return HtmlResponse(url=request.url, body=self.browser.page_source, request=request, encoding='utf-8',
+                                status=200)
+        except TimeoutException:
+            return HtmlResponse(url=request.url, status=500, request=request)
 
 
-
-
-
-
-
-# 随机的User-Agent
-class RandomUserAgent(object):
-    def process_request(self, request, spider):
-
-        useragent = random.choice(USER_AGENTS)
-        request.headers.setdefault("User-Agent", useragent)
