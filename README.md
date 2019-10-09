@@ -16,6 +16,11 @@
 
 ### Scrapy-redis 爬去新浪微博用户信息
 
+截图：
+![新浪微博结果1.0](image/新浪微博结果1.0.png)
+
+![mongodb](image/mongodb.png)
+
 **原理**
 
 - spider解析下载器下载下来的response,返回item或者是links 
@@ -74,9 +79,7 @@ dockerfile:
 
 - docker run -d -p 6800:6800 scrapyd
 
-![新浪微博结果1.0](image/新浪微博结果1.0.png)
 
-![mongodb](image/mongodb.png)
 
 #### Scrapy + Selenium爬取网易云音乐
 
