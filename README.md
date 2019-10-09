@@ -13,9 +13,9 @@
 
 在代理网站网页结构不更新的情况下代理池可以稳定的获取2000+以上的代理。对于检测不同的网站，代理的有效性数量也不一样。大部分网站都能够维持1000+以上的代理，对于小规模的数据采集任务已经够用了。
 
-![新浪微博结果1.0](C:\Users\Chen景波\Desktop\Spider_github\image\新浪微博结果1.0.png)
+![新浪微博结果1.0](image/新浪微博结果1.0.png)
 
-![mongodb](C:\Users\Chen景波\Desktop\Spider_github\image\mongodb.png)
+![mongodb](image\mongodb.png)
 
 
 
